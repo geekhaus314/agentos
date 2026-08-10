@@ -1,0 +1,12 @@
+build/
+.gradle/
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+*.log
+.env
+next/
+node_modules/
+.next/
