@@ -3,6 +3,7 @@ package com.agentos.core.dto;
 import java.math.BigDecimal;
 
 public class OpportunityRequest {
+
     private String source;
     private String priority;
     private BigDecimal estimatedValue;

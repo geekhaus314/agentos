@@ -2,7 +2,7 @@ spring:
   application:
     name: agentos
   datasource:
-    url: jdbc:postgresql://${TENANT_DB_HOST:localhost}:5432/agentos
+    url: jdbc:postgresql://${TENANT_DB_HOST:localhost}:5432/${DB_NAME:agentos}
     username: ${DB_USER:agentos}
     password: ${DB_PASSWORD:agentos}
     driver-class-name: org.postgresql.Driver
@@ -38,7 +38,7 @@ logging:
 
 app:
   security:
-    jwt-secret: ${JWT_SECRET:defaultSecretKeyChangeMeInProductionAtLeast256BitsLongForHS256)}
+    jwt-secret: ${JWT_SECRET:defaultSecretKeyChangeMeInProductionAtLeast256BitsLongForHS256}
     jwt-expiration: 3600000
   cors:
     allowed-origins:
@@ -47,3 +47,22 @@ app:
   audit:
     enabled: true
     retention-days: 365
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:h2:mem:agentos;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: false
