@@ -4,11 +4,14 @@ import com.agentos.core.dto.OpportunityRequest;
 import com.agentos.core.entity.Opportunity;
 import com.agentos.core.repository.OpportunityRepository;
 import com.agentos.core.security.AgentosUserPrincipal;
+import com.agentos.core.service.AuditService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -16,9 +19,11 @@ import java.util.UUID;
 public class OpportunityController {
 
     private final OpportunityRepository opportunityRepository;
+    private final AuditService auditService;
 
-    public OpportunityController(OpportunityRepository opportunityRepository) {
+    public OpportunityController(OpportunityRepository opportunityRepository, AuditService auditService) {
         this.opportunityRepository = opportunityRepository;
+        this.auditService = auditService;
     }
 
     @GetMapping
@@ -28,7 +33,7 @@ public class OpportunityController {
 
     @PostMapping
     public ResponseEntity<Opportunity> create(@AuthenticationPrincipal AgentosUserPrincipal principal,
-                                              @RequestBody OpportunityRequest request) {
+                                              @Valid @RequestBody OpportunityRequest request) {
         Opportunity opp = new Opportunity();
         opp.setTenantId(principal.tenantId());
         opp.setSource(request.getSource());
@@ -37,7 +42,10 @@ public class OpportunityController {
         opp.setNotes(request.getNotes());
         opp.setStatus("new");
         opp.setQualificationStatus("new");
-        return ResponseEntity.ok(opportunityRepository.save(opp));
+        Opportunity saved = opportunityRepository.save(opp);
+        auditService.record(principal, "opportunity.create", "opportunity", saved.getId().toString(),
+                Map.of("source", saved.getSource(), "priority", saved.getPriority()));
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/{id}")
@@ -52,7 +60,11 @@ public class OpportunityController {
     public ResponseEntity<Void> delete(@AuthenticationPrincipal AgentosUserPrincipal principal, @PathVariable UUID id) {
         return opportunityRepository.findById(id)
                 .filter(o -> o.getTenantId().equals(principal.tenantId()))
-                .map(o -> { opportunityRepository.delete(o); return ResponseEntity.ok().<Void>build(); })
+                .map(o -> {
+                    opportunityRepository.delete(o);
+                    auditService.record(principal, "opportunity.delete", "opportunity", o.getId().toString(), Map.of());
+                    return ResponseEntity.ok().<Void>build();
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }

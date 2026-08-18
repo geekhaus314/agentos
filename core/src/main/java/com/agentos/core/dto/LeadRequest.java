@@ -1,7 +1,12 @@
 package com.agentos.core.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LeadRequest {
+
+    @NotBlank(message = "source must not be blank")
     private String source;
+    @NotBlank(message = "contactName must not be blank")
     private String contactName;
     private String contactEmail;
     private String contactPhone;
