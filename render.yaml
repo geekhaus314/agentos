@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: agentos-core
+    env: docker
+    plan: standard
+    dockerfilePath: core/Dockerfile
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: production
+      - key: DATABASE_URL
+        fromDatabase: agentos-db
+
+databases:
+  - name: agentos-db
+    provider: external
+    plan: free
+    # Use Neon or other managed Postgres; set connection string in Render dashboard

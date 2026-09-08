@@ -1,21 +1,37 @@
 # AgentOS — Vertical AI Revenue Infrastructure
 
-**Version:** 1.0
-**Date:** 2026-08-09
+[![Release](https://img.shields.io/badge/release-1.0-blue)](https://github.com/geekhaus314/agentos)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
----
+A production-grade, multi-tenant platform for vertical AI revenue workflows (qualifications, intake, orchestration, and audit-ready integrations).
 
-# 1. Project Overview
+Version: 1.0 — 2026-08-09
 
-AgentOS is a multi-tenant, vertical AI revenue workflow platform.
+Quickstart
+---------
+Prerequisites: Docker & Docker Compose installed.
 
-The platform provides:
-- Reusable core infrastructure for AI-powered revenue operations
-- Industry-specific vertical modules (commercial roofing, HVAC, insurance, etc.)
-- White-label reseller deployment
-- Configurable workflow engine
-- AI agent orchestration with explicit tool authorization
-- Full audit logging and compliance
+Start locally using Docker Compose:
+
+```bash
+# build and run services
+docker-compose up --build
+```
+
+Open the platform at http://localhost:8080 (default) after services are healthy.
+
+Developer setup
+---------------
+For local development and environment bootstrapping, see the scripts/ folder:
+
+```bash
+# prepare dev environment (secrets, DB migrations, local config)
+./scripts/bootstrap.sh
+```
+
+Contributing, License, and Support
+----------------------------------
+Please read CONTRIBUTING.md (if present) and CODE_OF_CONDUCT.md. This repository is licensed under the MIT License. See LICENSE for details.
 
 ---
 
